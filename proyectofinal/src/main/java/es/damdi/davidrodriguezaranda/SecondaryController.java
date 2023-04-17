@@ -49,7 +49,7 @@ public class SecondaryController {
 
       FileInputStream serviceAccount = null;
     try {
-      serviceAccount = new FileInputStream("C:/Users/6002592/Desktop/Java/proyectofinal/src/main/resources/es/damdi/davidrodriguezaranda/key.json");
+      serviceAccount = new FileInputStream("key.json");
       FirebaseOptions options = FirebaseOptions.builder()
           .setCredentials(GoogleCredentials.fromStream(serviceAccount))
           .build();
