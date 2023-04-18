@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
 
-<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.damdi.davidrodriguezaranda.SecondaryController">
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
         <Insets top="25" right="25" bottom="25" left="25"/>
     </padding>
@@ -19,6 +19,7 @@
     <Label text="Contraseña:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
     <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-    <Button fx:id="registerButton" text="Registrar" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2" onAction="#handleRegisterButton"/>
-</GridPane>
+    <Button fx:id="registerButton" text="Registrar" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2" onAction="#createUser" />
+    <Button fx:id="cancelButton" text="Cancelar" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
+</GridPane>

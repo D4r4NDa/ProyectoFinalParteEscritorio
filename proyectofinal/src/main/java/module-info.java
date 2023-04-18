@@ -6,6 +6,6 @@ module es.damdi.davidrodriguezaranda {
     requires java.logging;
     requires java.desktop;
 
-    opens es.damdi.davidrodriguezaranda to javafx.fxml;
+    opens es.damdi.davidrodriguezaranda to javafx.fxml, firebase.admin;
     exports es.damdi.davidrodriguezaranda;
 }

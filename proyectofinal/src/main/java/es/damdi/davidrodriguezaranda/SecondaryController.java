@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -27,6 +28,7 @@ import javafx.stage.Stage;
 public class SecondaryController {
 
   FirebaseAuth auth;
+  FirebaseDatabase db;
 
   @FXML
   private TextField nameField;
@@ -45,38 +47,20 @@ public class SecondaryController {
       createUser();
   }
 
+  @FXML
     public void createUser() {
-
-      FileInputStream serviceAccount = null;
-    try {
-      serviceAccount = new FileInputStream("key.json");
-      FirebaseOptions options = FirebaseOptions.builder()
-          .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-          .build();
-      FirebaseApp.initializeApp(options);
-    } catch (IOException e) {
-      System.err.println("Error initializing Firebase app: " + e.getMessage());
-    } finally {
-      if (serviceAccount != null) {
-        try {
-          serviceAccount.close();
-        } catch (IOException e) {
-          System.err.println("Error closing service account file: " + e.getMessage());
-        }
-      }
-    }
 
         // Initialize Firebase app
         auth = FirebaseAuth.getInstance();
+        db= FirebaseDatabase.getInstance("https://proyectofinal-29247-default-rtdb.europe-west1.firebasedatabase.app/");
     
         String email;
         String password;
-        String name;
-        String uRecord="";
+        String nombre;
 
         email= emailField.getText();
         password= passwordField.getText();
-        name= nameField.getText();
+        nombre= nameField.getText();
     
         try {
           CreateRequest request = new CreateRequest()
@@ -84,11 +68,15 @@ public class SecondaryController {
               .setEmailVerified(false)
               .setPassword(password);
           UserRecord userRecord = auth.createUser(request);
-          uRecord= userRecord.getUid();
+
+          Camarero c= new Camarero(email, nombre.toString(), password, false);
+
+          db.getReference("camareros").child(password.toString()).setValue(c, null);
+
           Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.setTitle("Employee Registration");
-            Label dialogLabel = new Label("Successfully registered employee " + name + " with email " + email);
+            Label dialogLabel = new Label("Successfully registered employee " + nombre);
             dialogLabel.setFont(new Font(16));
             Button dialogButton = new Button("OK");
             dialogButton.setOnAction(e -> dialog.close());
@@ -97,6 +85,11 @@ public class SecondaryController {
             Scene dialogScene = new Scene(dialogVbox, 400, 200);
             dialog.setScene(dialogScene);
             dialog.show();
+
+          emailField.setText("");
+          nameField.setText("");
+          passwordField.setText("");
+
         } catch (FirebaseAuthException ex) {
           Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
@@ -110,6 +103,8 @@ public class SecondaryController {
             Scene dialogScene = new Scene(dialogVbox, 400, 200);
             dialog.setScene(dialogScene);
             dialog.show();
+
+            ex.printStackTrace();
         }
     }
 

@@ -3,10 +3,13 @@ package es.damdi.davidrodriguezaranda;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 
 import com.google.firebase.database.*;
 
@@ -20,9 +23,12 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import java.awt.EventQueue;
 
+
+
 public class PrimaryController {
 
     FirebaseDatabase db;
+    
 
     @FXML
     private TableView<Employee> employeeTable;
@@ -41,6 +47,9 @@ public class PrimaryController {
 
     @FXML
     private TextField passwordField;
+
+    @FXML
+    private ImageView ivPerfil;
 
     private ObservableList<Employee> employeeData = FXCollections.observableArrayList();
 
@@ -64,9 +73,13 @@ public class PrimaryController {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 db.getReference("camareros").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
+
+                        empleados.clear();
+                        employeeData.clear();
                         
                         for (DataSnapshot i : snapshot.getChildren()) {
                             try {
@@ -78,6 +91,7 @@ public class PrimaryController {
                                 c.setOnline((Boolean) data.get("online"));
     
                                 empleados.add(c);
+                                System.out.println(c.getNombre());
                             }catch(DatabaseException e) {
                                 System.err.println("Error al recuperar el camarero: " + e.getMessage());
                             }
@@ -90,7 +104,7 @@ public class PrimaryController {
                                 nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 
                                 for(Camarero e : empleados) {
-                                    Employee emp= new Employee(e.getEmail(), e.getName(), e.getPassword(), e.getOnline());
+                                    Employee emp= new Employee(e.getEmail(), e.getNombre(), e.getPassword(), e.getOnline());
                                     employeeData.add(emp);
 
                                 }
@@ -128,6 +142,27 @@ public class PrimaryController {
 
         }
 
+    }
+
+    @FXML
+    private void showAddEmployeeDialog() {
+        Dialog<Employee> dialog = new Dialog<>();
+        dialog.setTitle("Add Employee");
+        dialog.setHeaderText("Please enter employee details");
+
+        // Load the secondary FXML and controller
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("secondary.fxml"));
+        SecondaryController controller = new SecondaryController();
+        loader.setController(controller);
+
+        try {
+            dialog.getDialogPane().setContent(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Show the dialog and wait for user input
+        dialog.showAndWait();
     }
 
     @FXML

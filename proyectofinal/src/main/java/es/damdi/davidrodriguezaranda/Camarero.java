@@ -24,7 +24,7 @@ public class Camarero implements Serializable {
         return this.email;
     }
 
-    public String getName() {
+    public String getNombre() {
         return this.nombre;
     }
 
